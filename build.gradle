@@ -15,6 +15,13 @@ dependencies {
     testCompile FIRST_LEVEL_JMOCK
 }
 
+ideaModule {
+    gradleCacheVariable = 'GRADLE_CACHE'
+    downloadJavadoc = true
+    outputDir = "$rootProject.projectDir/intellij/out" as File
+    testOutputDir = "$rootProject.projectDir/intellij/testOut" as File
+}
+
 ideaProject {
     withXml { provider ->
         def node = provider.asNode()

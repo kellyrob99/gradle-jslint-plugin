@@ -10,6 +10,8 @@ class JSLintPluginConvention
     private static final String TXT = 'txt'
     private static final String XML = 'xml'
     private static final String REPORTS_DIR = 'reportsDir'
+    private static final String PLAIN = 'plain'
+    private static final String HTML = 'html'
 
     /* jar reference is left untyped to allow more flexible configuration if needed */
     def antjar = 'com.googlecode.jslint4java:jslint4java-ant:1.4.4'
@@ -19,7 +21,7 @@ class JSLintPluginConvention
     String taskName = 'com.googlecode.jslint4java.ant.JSLintTask'
     String formatterType = 'plain'
     String destFilename = 'jslint'
-    String haltOnFailure = 'true'
+    boolean haltOnFailure = true
     String options = ''
     String destDir
     String destFile
@@ -51,9 +53,9 @@ class JSLintPluginConvention
     {
         switch (formatterType)
         {
-            case ('plain'):
+            case (PLAIN):
                 return createOutputFileName(TXT)
-            case (['xml', 'html']):
+            case ([XML, HTML]):
                 return createOutputFileName(XML)
         }
     }
@@ -77,9 +79,9 @@ class JSLintPluginConvention
     {
         switch (formatterType)
         {
-            case ('plain'):
-                return TXT
-            case (['xml', 'html']):
+            case (PLAIN):
+                return PLAIN
+            case ([XML, HTML]):
                 return XML
         }
     }

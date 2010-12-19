@@ -1,29 +1,32 @@
 package org.kar.jslint.gradle.plugin
 
-import org.gradle.api.Project
+import org.gradle.api.internal.artifacts.configurations.DefaultConfiguration
+import org.gradle.api.tasks.TaskExecutionException
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.rules.TemporaryFolder
-import static org.hamcrest.Matchers.instanceOf
+import org.gradle.api.Project
+import org.gradle.api.Task
+import static org.hamcrest.Matchers.*
 import org.junit.*
 import static org.junit.Assert.*
-import static org.hamcrest.Matchers.*
-import org.gradle.api.Task
-import org.gradle.api.internal.artifacts.configurations.DefaultConfiguration
 
 /**
  * @author Kelly Robinson
  */
 class JSLintPluginTest
 {
+    private static final String TEST_SOURCE_PATH = new File('.', 'src/test/resources').absolutePath
+
     @Rule
     public TemporaryFolder tmpDir = new TemporaryFolder();
     private Project project
-    private final JSLintPlugin plugin = new JSLintPlugin()
+    private JSLintPlugin plugin
 
     @Before
     public void setup()
     {
         project = ProjectBuilder.builder().withProjectDir(tmpDir.folder).build()
+        plugin = new JSLintPlugin()
     }
 
     @Test
@@ -40,7 +43,7 @@ class JSLintPluginTest
         plugin.apply(project)
 
         Set<Task> tasks = project.getTasksByName(JSLintPlugin.TASK_NAME, false)
-        assertThat (tasks.size(), equalTo(1) )
+        assertThat(tasks.size(), equalTo(1))
     }
 
     @Test
@@ -59,6 +62,69 @@ class JSLintPluginTest
         String filename = plugin.loadXslFile()
         File file = new File(filename)
         assertThat(filename, endsWith(JSLintPlugin.XSL_FILE_DIR + '/' + JSLintPlugin.XSL_FILE))
+        assertThat(file.exists(), equalTo(true))
+        assertThat(file.size(), greaterThan(0l))
+    }
+
+    @Test(expected = TaskExecutionException.class)
+    public void antTaskShouldFailOnJQuery()
+    {
+        plugin.apply(project)
+        JSLintPluginConvention convention = plugin.jsLintpluginConvention
+        convention.with {
+            inputDirs = [TEST_SOURCE_PATH]
+        }
+        project.getTasksByName(JSLintPlugin.TASK_NAME, false).iterator().next().execute()
+    }
+
+    @Test
+    public void settingHaltOnFailureFalseShouldWorkOnJQuery()
+    {
+        plugin.apply(project)
+        JSLintPluginConvention convention = plugin.jsLintpluginConvention
+        convention.with {
+            inputDirs = [TEST_SOURCE_PATH]
+            haltOnFailure = false
+        }
+        project.getTasksByName(JSLintPlugin.TASK_NAME, false).iterator().next().execute()
+        File file = new File(convention.createOutputFileName())
+        assertThat(file.exists(), equalTo(true))
+        assertThat(file.size(), greaterThan(0l))
+    }
+
+
+    @Test
+    public void htmlFormatterTypeShouldTriggerXsltTransform()
+    {
+        plugin.apply(project)
+        JSLintPluginConvention convention = plugin.jsLintpluginConvention
+        convention.with {
+            inputDirs = [TEST_SOURCE_PATH]
+            haltOnFailure = false
+            formatterType = JSLintPluginConvention.HTML
+        }
+        project.getTasksByName(JSLintPlugin.TASK_NAME, false).iterator().next().execute()
+        String outputFilename = convention.createOutputFileName()
+        File file = new File(outputFilename)
+        assertThat(file.exists(), equalTo(true))
+        assertThat(file.size(), greaterThan(0l))
+        File htmlFile = new File(outputFilename.replace('.xml', '.html'))
+        assertThat(htmlFile.exists(), equalTo(true))
+        assertThat(htmlFile.size(), greaterThan(0l))
+    }
+
+    @Test
+    public void shouldWorkOnMultipleInputDirs()
+    {
+        plugin.apply(project)
+        JSLintPluginConvention convention = plugin.jsLintpluginConvention
+        convention.with {
+            inputDirs = [TEST_SOURCE_PATH, TEST_SOURCE_PATH]
+            haltOnFailure = false
+        }
+        project.getTasksByName(JSLintPlugin.TASK_NAME, false).iterator().next().execute()
+        String outputFilename = convention.createOutputFileName()
+        File file = new File(outputFilename)
         assertThat(file.exists(), equalTo(true))
         assertThat(file.size(), greaterThan(0l))
     }

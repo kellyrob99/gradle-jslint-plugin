@@ -44,7 +44,7 @@ class JSLintPlugin implements Plugin<Project>
     private def configureJslintTask()
     {
         project.task(TASK_NAME) << {
-            project.reportsDir.mkdirs()
+            project.file(project.reportsDir).mkdirs()
             logger.info("Running jslint on project ${project.name}")
             ant.taskdef(name: TASK_NAME, classname: jsLintpluginConvention.taskName, classpath: project.configurations.jslint.asPath)
             ant."$TASK_NAME"(jsLintpluginConvention.mapTaskProperties()) {

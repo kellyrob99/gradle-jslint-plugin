@@ -6,10 +6,6 @@ import org.gradle.api.Project
 import org.junit.rules.TemporaryFolder
 import static org.junit.Assert.*
 import static org.hamcrest.Matchers.*
-import static org.hamcrest.Matchers.equalTo
-import static org.hamcrest.Matchers.equalTo
-import static org.junit.Assert.assertThat
-import static org.hamcrest.Matchers.equalTo
 
 /**
  * @author Kelly Robinson
@@ -33,7 +29,7 @@ class JSLintPluginConventionTest
     {
         assertEquals(convention.formatterType, 'plain')
         assertEquals(convention.destFilename, 'jslint')
-        assertEquals(convention.haltOnFailure, 'true')
+        assertEquals(convention.haltOnFailure, true)
         assertEquals(convention.options, '')
         assertEquals(convention.inputDirs, ['.'])
         assertEquals(convention.includes, '**/*.js')
@@ -59,7 +55,7 @@ class JSLintPluginConventionTest
     @Test
     public void formatterTypeIsTxtForPlain()
     {
-        assertEquals(JSLintPluginConvention.TXT, convention.decideFormat())
+        assertEquals(JSLintPluginConvention.PLAIN, convention.decideFormat())
     }
 
     @Test
@@ -80,12 +76,12 @@ class JSLintPluginConventionTest
             formatterType = 'xml'
             options = myOptions
             inputDirs = myInputDirs
-            haltOnFailure = 'false'
+            haltOnFailure = false
         }
         assertEquals ('xml', convention.formatterType)
         assertEquals (myOptions, convention.options)
         assertEquals (myInputDirs, convention.inputDirs)
-        assertEquals ('false', convention.haltOnFailure)
+        assertEquals (false, convention.haltOnFailure)
     }
 
     @Test
@@ -100,7 +96,7 @@ class JSLintPluginConventionTest
     public void taskPropertiesShouldIncludeOptionsIfSpecified()
     {
         String myOptions = 'myOptions'
-        convention.haltOnFailure = 'false'
+        convention.haltOnFailure = false
         convention.options = myOptions
         LinkedHashMap<String, String> properties = convention.mapTaskProperties()
         assertThat(properties.size(), equalTo(2))
