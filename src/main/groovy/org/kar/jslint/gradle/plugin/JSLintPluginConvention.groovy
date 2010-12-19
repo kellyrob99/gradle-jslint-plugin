@@ -10,6 +10,7 @@ class JSLintPluginConvention
     private static final String TXT = 'txt'
     private static final String XML = 'xml'
     private static final String REPORTS_DIR = 'reportsDir'
+    private static final String REPORTS_DIR_NAME = 'reports'
     private static final String PLAIN = 'plain'
     private static final String HTML = 'html'
 
@@ -30,7 +31,7 @@ class JSLintPluginConvention
     {
         if (!project.hasProperty(REPORTS_DIR))
         {
-            project.setProperty(REPORTS_DIR, "${project.buildDir}/reports")
+            project.setProperty(REPORTS_DIR, "$project.buildDir/$REPORTS_DIR_NAME")
         }
         destDir = "${project.reportsDir}"
         destFile = "$destDir/$destFilename"
