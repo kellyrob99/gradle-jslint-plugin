@@ -1,0 +1,10 @@
+# Ignore all dotfiles...
+.*
+# except for .gitignore
+!.gitignore
+target/*
+classes/*
+*.iml
+*.ipr
+*.iws
+build/*
