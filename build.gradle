@@ -15,4 +15,17 @@ dependencies {
     testCompile FIRST_LEVEL_JMOCK
 }
 
+ideaProject {
+    withXml { provider ->
+        def node = provider.asNode()
+        // Use git
+        def vcsConfig = node.component.find { it.'@name' == 'VcsDirectoryMappings' }
+        vcsConfig.mapping[0].'@vcs' = 'Git'
+
+        // Set gradle home
+        def gradleSettings = node.appendNode('component', [name: 'GradleSettings'])
+        gradleSettings.appendNode('option', [name: 'SDK_HOME', value: gradle.gradleHomeDir.absolutePath])
+    }
+}
+
 defaultTasks 'clean', 'build'
