@@ -16,6 +16,8 @@ import static org.junit.Assert.*
 class JSLintPluginTest
 {
     private static final String TEST_SOURCE_PATH = new File('.', 'src/test/resources').absolutePath
+    private static final String ERROR_JS = 'errorjs.js'
+    private static final String PASSING_JS = 'simplejs.js'
 
     @Rule
     public TemporaryFolder tmpDir = new TemporaryFolder();
@@ -67,7 +69,7 @@ class JSLintPluginTest
     }
 
     @Test(expected = TaskExecutionException.class)
-    public void antTaskShouldFailOnJQuery()
+    public void antTaskShouldFailOnJOnTestJS()
     {
         plugin.apply(project)
         JSLintPluginConvention convention = plugin.jsLintpluginConvention
@@ -78,7 +80,37 @@ class JSLintPluginTest
     }
 
     @Test
-    public void settingHaltOnFailureFalseShouldWorkOnJQuery()
+    public void inclusionShouldWorkToSpecifyFiles()
+    {
+        plugin.apply(project)
+        JSLintPluginConvention convention = plugin.jsLintpluginConvention
+        convention.with {
+            inputDirs = [TEST_SOURCE_PATH]
+            includes = PASSING_JS
+        }
+        project.getTasksByName(JSLintPlugin.TASK_NAME, false).iterator().next().execute()
+        File file = new File(convention.createOutputFileName())
+        assertThat(file.exists(), equalTo(true))
+        assertThat(file.size(), equalTo(0l))
+    }
+
+    @Test
+    public void exclusionShouldWorkToSpecifyFiles()
+    {
+        plugin.apply(project)
+        JSLintPluginConvention convention = plugin.jsLintpluginConvention
+        convention.with {
+            inputDirs = [TEST_SOURCE_PATH]
+            excludes = ERROR_JS
+        }
+        project.getTasksByName(JSLintPlugin.TASK_NAME, false).iterator().next().execute()
+        File file = new File(convention.createOutputFileName())
+        assertThat(file.exists(), equalTo(true))
+        assertThat(file.size(), equalTo(0l))
+    }
+
+    @Test
+    public void settingHaltOnFailureFalseShouldWork()
     {
         plugin.apply(project)
         JSLintPluginConvention convention = plugin.jsLintpluginConvention
@@ -91,7 +123,6 @@ class JSLintPluginTest
         assertThat(file.exists(), equalTo(true))
         assertThat(file.size(), greaterThan(0l))
     }
-
 
     @Test
     public void htmlFormatterTypeShouldTriggerXsltTransform()
