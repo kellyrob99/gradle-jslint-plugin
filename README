@@ -16,3 +16,5 @@ The Gradle jslint Task can be configured with the following parameters(types and
 >    boolean haltOnFailure = true
 >    String options = ''
 
+The formatterTypes available are: plain, xml, html
+
