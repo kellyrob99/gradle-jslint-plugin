@@ -19,15 +19,13 @@ class JSLintPluginTest
     private static final String ERROR_JS = 'errorjs.js'
     private static final String PASSING_JS = 'simplejs.js'
 
-    @Rule
-    public TemporaryFolder tmpDir = new TemporaryFolder();
     private Project project
     private JSLintPlugin plugin
 
     @Before
     public void setup()
     {
-        project = ProjectBuilder.builder().withProjectDir(tmpDir.folder).build()
+        project = ProjectBuilder.builder().build()
         plugin = new JSLintPlugin()
     }
 
@@ -35,7 +33,6 @@ class JSLintPluginTest
     public void conventionShouldBeRegisteredOnApply()
     {
         plugin.apply(project)
-
         assertThat(project.convention.plugins.jslint, instanceOf(JSLintPluginConvention))
     }
 
@@ -43,7 +40,6 @@ class JSLintPluginTest
     public void taskShouldBeAddedOnApply()
     {
         plugin.apply(project)
-
         Set<Task> tasks = project.getTasksByName(JSLintPlugin.TASK_NAME, false)
         assertThat(tasks.size(), equalTo(1))
     }

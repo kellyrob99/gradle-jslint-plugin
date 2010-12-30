@@ -12,15 +12,13 @@ import static org.hamcrest.Matchers.*
  */
 class JSLintPluginConventionTest
 {
-    @Rule
-    public TemporaryFolder tmpDir = new TemporaryFolder();
     private Project project
     private JSLintPluginConvention convention
 
     @Before
     public void setup()
     {
-        project = ProjectBuilder.builder().withProjectDir(tmpDir.folder).build()
+        project = ProjectBuilder.builder().build()
         convention = new JSLintPluginConvention(project)
     }
 
@@ -101,6 +99,6 @@ class JSLintPluginConventionTest
         LinkedHashMap<String, String> properties = convention.mapTaskProperties()
         assertThat(properties.size(), equalTo(2))
         assertThat(properties.haltOnFailure, equalTo(convention.haltOnFailure))
-        assertThat(properties.options, equalTo(myOptions))
+        assertThat(properties.options, equalTo(convention.options))
     }
 }

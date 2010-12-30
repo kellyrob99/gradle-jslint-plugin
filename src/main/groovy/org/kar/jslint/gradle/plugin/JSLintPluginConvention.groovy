@@ -16,10 +16,10 @@ class JSLintPluginConvention
 
     /* jar reference is left untyped to allow more flexible configuration if needed */
     def antjar = 'com.googlecode.jslint4java:jslint4java-ant:1.4.4'
+    String taskName = 'com.googlecode.jslint4java.ant.JSLintTask'
     List<String> inputDirs = ['.']
     String includes = '**/*.js'
     String excludes = ''
-    String taskName = 'com.googlecode.jslint4java.ant.JSLintTask'
     String formatterType = 'plain'
     String destFilename = 'jslint'
     boolean haltOnFailure = true
