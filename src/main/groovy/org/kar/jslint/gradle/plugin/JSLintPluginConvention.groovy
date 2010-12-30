@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2010.
+ * Author Kelly Robinson.
+ */
+
 package org.kar.jslint.gradle.plugin
 
 import org.gradle.api.Project
