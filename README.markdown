@@ -22,10 +22,6 @@ The Gradle jslint Task can be configured with the following parameters(types and
 
 The formatterTypes available are: plain, xml, html
 
-<<<<<<< HEAD:README
-This plugin is madeavailable under the Apache 2.0 license, I hope you find value and have fun with it!
-http://www.apache.org/licenses/LICENSE-2.0
-=======
 Here's an example which uses most of the options:
 
 ```
@@ -39,4 +35,5 @@ Here's an example which uses most of the options:
  } 
 ```
 
->>>>>>> fbe4beee2f06f9e0644835bb964e66a0f54fa641:README.markdown
+This plugin is madeavailable under the Apache 2.0 license, I hope you find value and have fun with it!
+http://www.apache.org/licenses/LICENSE-2.0
