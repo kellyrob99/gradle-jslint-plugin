@@ -18,3 +18,5 @@ The Gradle jslint Task can be configured with the following parameters(types and
 
 The formatterTypes available are: plain, xml, html
 
+This plugin is madeavailable under the Apache 2.0 license, I hope you find value and have fun with it!
+http://www.apache.org/licenses/LICENSE-2.0
