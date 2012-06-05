@@ -8,11 +8,10 @@ package org.kar.jslint.gradle.plugin
 import org.gradle.api.internal.artifacts.configurations.DefaultConfiguration
 import org.gradle.api.tasks.TaskExecutionException
 import org.gradle.testfixtures.ProjectBuilder
-import org.junit.rules.TemporaryFolder
-import org.gradle.api.Project
-import org.gradle.api.Task
-import static org.hamcrest.Matchers.*
+import org.gradle.api.*
 import org.junit.*
+
+import static org.hamcrest.Matchers.*
 import static org.junit.Assert.*
 
 /**
@@ -28,9 +27,18 @@ class JSLintPluginTest
     private JSLintPlugin plugin
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         project = ProjectBuilder.builder().build()
+        //configure the project directly with included jars to prevent going to the internet to load these
+        project.configurations {
+            jslint
+        }
+        project.dependencies {
+            ['lib/jslint4java-1.4.4.jar', 'lib/jslint4java-ant-1.4.4.jar', 'lib/js-1.7R2.jar',
+                    'lib/jcommander-1.11.jar'].each {
+                jslint project.files(new File(it).absolutePath)
+            }
+        }
         plugin = new JSLintPlugin()
     }
 

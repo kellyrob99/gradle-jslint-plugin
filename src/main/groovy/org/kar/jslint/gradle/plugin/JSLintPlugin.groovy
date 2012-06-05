@@ -5,8 +5,8 @@
 
 package org.kar.jslint.gradle.plugin
 
+import org.gradle.api.internal.project.IsolatedAntBuilder
 import org.gradle.api.logging.Logger
-import org.gradle.api.plugins.ReportingBasePluginConvention
 import org.gradle.api.*
 
 /**
@@ -51,17 +51,21 @@ class JSLintPlugin implements Plugin<Project>
         project.task(TASK_NAME) << {
             project.file(project.reportsDir).mkdirs()
             logger.info("Running jslint on project ${project.name}")
-            ant.taskdef(name: TASK_NAME, classname: jsLintpluginConvention.taskName, classpath: project.configurations.jslint.asPath)
-            ant."$TASK_NAME"(jsLintpluginConvention.mapTaskProperties()) {
-                formatter(type: jsLintpluginConvention.decideFormat(), destfile:  jsLintpluginConvention.createOutputFileName())
-                jsLintpluginConvention.inputDirs.each { dirName ->
-                    fileset(dir: dirName, includes: jsLintpluginConvention.includes, excludes: jsLintpluginConvention.excludes)
+            def antBuilder = services.get(IsolatedAntBuilder)
+            final String xlsFilePath = loadXslFile()
+            antBuilder.withClasspath(project.configurations.jslint).execute {
+                ant.taskdef(name: TASK_NAME, classname: jsLintpluginConvention.TASK_NAME)
+                ant."$TASK_NAME"(jsLintpluginConvention.mapTaskProperties()) {
+                    formatter(type: jsLintpluginConvention.decideFormat(), destfile: jsLintpluginConvention.createOutputFileName())
+                    jsLintpluginConvention.inputDirs.each { dirName ->
+                        fileset(dir: dirName, includes: jsLintpluginConvention.includes, excludes: jsLintpluginConvention.excludes)
+                    }
+                }
+                if (jsLintpluginConvention.formatterType == 'html') {
+                    ant.xslt(basedir: jsLintpluginConvention.destDir, destdir: jsLintpluginConvention.destDir, style: xlsFilePath)
                 }
             }
-            if (jsLintpluginConvention.formatterType == 'html')
-            {
-                ant.xslt(basedir: jsLintpluginConvention.destDir, destdir: jsLintpluginConvention.destDir, style: loadXslFile())
-            }
+
         }
     }
 
@@ -85,14 +89,14 @@ class JSLintPlugin implements Plugin<Project>
      */
     private void configureDependencies()
     {
-        project.configurations {
-            jslint
-        }
-        project.repositories {
-            mavenCentral()
-        }
-        project.dependencies {
-            jslint jsLintpluginConvention.antjar
+
+        def config = project.configurations['jslint']
+        if (config.dependencies.empty) {
+            project.dependencies {
+                jslint(JSLintPluginConvention.ANT_JAR)
+            }
         }
     }
 }
+
+

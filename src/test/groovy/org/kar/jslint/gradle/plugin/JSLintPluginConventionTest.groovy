@@ -5,12 +5,12 @@
 
 package org.kar.jslint.gradle.plugin
 
+import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.*
-import org.gradle.api.Project
-import org.junit.rules.TemporaryFolder
+
+import static org.hamcrest.Matchers.equalTo
 import static org.junit.Assert.*
-import static org.hamcrest.Matchers.*
 
 /**
  * @author Kelly Robinson
@@ -64,7 +64,7 @@ class JSLintPluginConventionTest
     @Test
     public void formatterTypeIsXmlIfNotPlain()
     {
-         ['xml', 'html'].each { formatterType ->
+        ['xml', 'html'].each { formatterType ->
             convention.formatterType = formatterType
             assertEquals(JSLintPluginConvention.XML, convention.decideFormat())
         }
@@ -81,10 +81,10 @@ class JSLintPluginConventionTest
             inputDirs = myInputDirs
             haltOnFailure = false
         }
-        assertEquals ('xml', convention.formatterType)
-        assertEquals (myOptions, convention.options)
-        assertEquals (myInputDirs, convention.inputDirs)
-        assertEquals (false, convention.haltOnFailure)
+        assertEquals('xml', convention.formatterType)
+        assertEquals(myOptions, convention.options)
+        assertEquals(myInputDirs, convention.inputDirs)
+        assertEquals(false, convention.haltOnFailure)
     }
 
     @Test
