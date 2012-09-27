@@ -35,5 +35,30 @@ Here's an example which uses most of the options:
  } 
 ```
 
-This plugin is madeavailable under the Apache 2.0 license, I hope you find value and have fun with it!
+You can use a Github repository to provide version 0.2 of this plugin for your build. Here's a sample configuration
+that works with Gradle 1.2
+```groovy
+    apply plugin: 'java'
+    group = 'temp'
+
+    buildscript {
+    	repositories{
+    		maven{
+    			url = 'http://kellyrob99.github.com/Jenkins-api-tour/repository'
+    		}
+    	}
+        dependencies {
+            classpath 'org.kar:gradle-jslint-plugin:0.2'
+        }
+    }
+
+    repositories{
+      	mavenCentral() //needed by the plugin to retrieve the jslint jar
+    }
+
+    apply plugin: 'jslint'
+
+```
+
+This plugin is made available under the Apache 2.0 license, I hope you find value and have fun with it!
 http://www.apache.org/licenses/LICENSE-2.0
