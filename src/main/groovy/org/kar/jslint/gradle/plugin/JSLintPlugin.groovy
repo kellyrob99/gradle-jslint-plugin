@@ -8,6 +8,7 @@ package org.kar.jslint.gradle.plugin
 import org.gradle.api.internal.project.IsolatedAntBuilder
 import org.gradle.api.logging.Logger
 import org.gradle.api.*
+import org.gradle.api.artifacts.Configuration
 
 /**
  * Wrap an ant task for performing static analysis of Javascript files using JSLint(http://www.jslint.com/lint.html).
@@ -80,6 +81,10 @@ class JSLintPlugin implements Plugin<Project>
         File tmpDir = new File(project.buildDir, XSL_FILE_DIR)
         tmpDir.mkdirs()
         File jsLintXsl = new File(tmpDir, XSL_FILE)
+        if(jsLintXsl.exists())
+        {
+            jsLintXsl.delete()
+        }
         jsLintXsl << stream
         return jsLintXsl.absolutePath
     }
@@ -89,9 +94,13 @@ class JSLintPlugin implements Plugin<Project>
      */
     private void configureDependencies()
     {
-
-        def config = project.configurations['jslint']
-        if (config.dependencies.empty) {
+        Configuration config = project.configurations.findByName('jslint')
+        if(!config){
+            project.configurations{
+                jslint
+            }
+        }
+        if (project.configurations.jslint.dependencies.empty) {
             project.dependencies {
                 jslint(JSLintPluginConvention.ANT_JAR)
             }

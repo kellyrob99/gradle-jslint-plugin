@@ -7,12 +7,12 @@ package org.kar.jslint.gradle.plugin
 
 import org.gradle.api.internal.artifacts.configurations.DefaultConfiguration
 import org.gradle.api.tasks.TaskExecutionException
-import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.api.*
 import org.junit.*
 
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.*
+import org.gradle.testfixtures.ProjectBuilder
 
 /**
  * @author Kelly Robinson
@@ -167,5 +167,14 @@ class JSLintPluginTest
         File file = new File(outputFilename)
         assertThat(file.exists(), equalTo(true))
         assertThat(file.size(), greaterThan(0l))
+    }
+
+    @Test
+    public void testMissingConfiguration()
+    {
+        project = ProjectBuilder.builder().build()
+        plugin = new JSLintPlugin()
+        plugin.apply(project)
+        println project.configurations.getByName('jslint')
     }
 }
